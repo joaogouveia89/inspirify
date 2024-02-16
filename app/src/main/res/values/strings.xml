@@ -3,4 +3,5 @@
     <string name="title_quote">Quote</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_favorites">Favorites</string>
+    <string name="no_favorites_warning">You still have no saved favorites, to save a new favorite, go to the quote screen, and click on the heart icon under the quote</string>
 </resources>
