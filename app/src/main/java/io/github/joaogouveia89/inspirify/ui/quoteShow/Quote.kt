@@ -1,7 +1,9 @@
 package io.github.joaogouveia89.inspirify.ui.quoteShow
 
+import androidx.annotation.DrawableRes
+
 data class Quote(
-    val quote: String,
+    val message: String,
     val author: String,
-    val isFavorite: Boolean = false
+    @DrawableRes val favoriteIconRes: Int
 )

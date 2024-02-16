@@ -3,6 +3,7 @@ package io.github.joaogouveia89.inspirify.ui.quoteShow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import io.github.joaogouveia89.inspirify.R
 
 class QuotesInputs{
     val onRefresh = MutableLiveData<Unit>()
@@ -10,7 +11,7 @@ class QuotesInputs{
 }
 
 interface QuotesOutputs{
-    val onNewQuoteAvailable: LiveData<Quote>
+    val quote: LiveData<Quote>
 }
 
 interface QuoteViewModelType{
@@ -22,11 +23,11 @@ class QuoteShowViewModel: ViewModel(), QuoteViewModelType, QuotesOutputs {
     override val outputs = this
     override val inputs = QuotesInputs()
 
-    private val tempQuote = Quote(
-        quote = "If you find yourself criticizing other people, you’re probably doing it out of resistance. When we see others beginning to live their authentic selves, it drives us crazy if we have not lived out our own.",
+    val currentQuote = Quote(
+        message = "If you find yourself criticizing other people, you’re probably doing it out of resistance. When we see others beginning to live their authentic selves, it drives us crazy if we have not lived out our own.",
         author = "The Art of War",
-        isFavorite = true
+        favoriteIconRes = R.drawable.ic_like
     )
 
-    override val onNewQuoteAvailable: LiveData<Quote> = MutableLiveData(tempQuote)
+    override val quote: LiveData<Quote> = MutableLiveData(currentQuote)
 }

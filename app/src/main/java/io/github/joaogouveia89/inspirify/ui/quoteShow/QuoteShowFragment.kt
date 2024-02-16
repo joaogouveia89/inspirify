@@ -36,16 +36,7 @@ class QuoteShowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.onNewQuoteAvailable.value?.let {
-            binding.quoteTv.text = it.quote
-            binding.authorTv.text = it.author
-            val icon = if(it.isFavorite) R.drawable.ic_like_fill else R.drawable.ic_like
-            binding.favoriteIv.setImageDrawable(ResourcesCompat.getDrawable(
-                resources,
-                icon,
-                context?.theme
-            ))
-        }
+        binding.viewModel = viewModel
     }
 
     override fun onDestroyView() {
