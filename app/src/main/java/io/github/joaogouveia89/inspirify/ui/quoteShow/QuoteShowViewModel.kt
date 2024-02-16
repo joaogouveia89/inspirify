@@ -21,6 +21,7 @@ class QuotesInputs {
 
 interface QuotesOutputs {
     val quoteRequestStatus: LiveData<DataRequest>
+    val quoteFavoriteUpdateStatus: LiveData<DataRequest>
 }
 
 interface QuoteViewModelType {
@@ -32,7 +33,16 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     QuotesOutputs {
 
     private val onFavoriteClickObserver = Observer<Unit> {
-        quoteFavoriteUseCase
+        quoteShowUseCase.dataRequest.value?.let {
+            if(it is DataRequest.Success<*>){
+                val currentQuote = it.data as? Quote
+                if(currentQuote != null){
+                    viewModelScope.launch(Dispatchers.IO) {
+                        quoteFavoriteUseCase.execute(currentQuote)
+                    }
+                }
+            }
+        }
     }
 
     override val outputs = this
@@ -50,6 +60,8 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     lateinit var quoteFavoriteUseCase: QuoteFavoriteUseCase
 
     override val quoteRequestStatus: LiveData<DataRequest> = quoteShowUseCase.dataRequest
+
+    override val quoteFavoriteUpdateStatus: LiveData<DataRequest> = quoteFavoriteUseCase.dataRequest
 
     fun fetchRandomQuote() {
         viewModelScope.launch(Dispatchers.IO) {

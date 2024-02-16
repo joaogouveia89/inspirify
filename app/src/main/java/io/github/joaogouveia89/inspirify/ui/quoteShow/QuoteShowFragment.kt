@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import com.google.android.material.snackbar.Snackbar
 import io.github.joaogouveia89.inspirify.InspirifyApplication
 import io.github.joaogouveia89.inspirify.R
@@ -31,7 +30,7 @@ class QuoteShowFragment : Fragment() {
         QuoteShowViewModelFactory(inspirifyApplication.inspirifyComponent)
     }
 
-    private val quoteRequestStatusObserver = Observer<DataRequest> { response ->
+    private val onQuoteUpdateObserver = Observer<DataRequest> { response ->
         when (response) {
             is DataRequest.OnProgress -> {
                 binding.progressBar.visibility = View.VISIBLE
@@ -68,7 +67,8 @@ class QuoteShowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.quoteRequestStatus.observe(viewLifecycleOwner, quoteRequestStatusObserver)
+        viewModel.quoteRequestStatus.observe(viewLifecycleOwner, onQuoteUpdateObserver)
+        viewModel.quoteFavoriteUpdateStatus.observe(viewLifecycleOwner, onQuoteUpdateObserver)
         binding.favoriteIv.setOnClickListener {
             viewModel.inputs.onFavoriteClick.postValue(Unit)
         }

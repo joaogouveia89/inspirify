@@ -18,7 +18,7 @@ interface FavoriteDao {
     suspend fun countReincidenceOfQuotes(quote: String, author: String): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addToFavorites(favorite: Favorite)
+    suspend fun addToFavorites(favorite: Favorite): Long
 
     @Delete
     suspend fun deleteFromFavorites(favorite: Favorite)

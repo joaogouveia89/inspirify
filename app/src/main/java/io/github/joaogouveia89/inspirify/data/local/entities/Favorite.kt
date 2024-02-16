@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Favorite(
-    @PrimaryKey val id: String,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    val id: Long = 0,
     @ColumnInfo(name = "quote") val quote: String,
     @ColumnInfo(name = "author") val author: String
 )
