@@ -6,6 +6,7 @@ import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.data.api.asQuote
 import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
 import io.github.joaogouveia89.inspirify.data.local.LocalDb
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class QuoteShowRepository @Inject constructor(
@@ -23,8 +24,19 @@ class QuoteShowRepository @Inject constructor(
         try {
             val response = api.fetchRandomQuote()
             if (response.isSuccessful) {
+                //checking if the quote is already on favorites
                 response.body()?.let {
-                    _dataRequest.postValue(DataRequest.Success(it.first().asQuote()))
+                    it.first().let { quote ->
+                        val numberOfIncidences = runBlocking {
+                            localDb.favoriteDao().countReincidenceOfQuotes(
+                                quote = quote.quote,
+                                author = quote.author
+                            )
+                        }
+                        _dataRequest.postValue(DataRequest.Success(quote.asQuote(
+                            isFavorite = numberOfIncidences > 0
+                        )))
+                    }
                 }
             }
         } catch (e: Exception) {

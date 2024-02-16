@@ -12,8 +12,8 @@ data class QuoteApi(
     @SerializedName("a") val author: String
 ) : Parcelable
 
-fun QuoteApi.asQuote() = Quote(
+fun QuoteApi.asQuote(isFavorite: Boolean) = Quote(
     message = this.quote,
     author = this.author,
-    favoriteIconRes = R.drawable.ic_like
+    favoriteIconRes = if(isFavorite) R.drawable.ic_like_fill else R.drawable.ic_like
 )
