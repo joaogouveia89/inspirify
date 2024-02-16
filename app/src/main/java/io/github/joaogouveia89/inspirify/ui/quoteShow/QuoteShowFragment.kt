@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import io.github.joaogouveia89.inspirify.InspirifyApplication
 import io.github.joaogouveia89.inspirify.R
 import io.github.joaogouveia89.inspirify.databinding.FragmentQuoteShowBinding
 
@@ -18,15 +20,19 @@ class QuoteShowFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: QuoteShowViewModel
+    val inspirifyApplication: InspirifyApplication by lazy {
+        (requireActivity().application as InspirifyApplication)
+    }
+
+    private val viewModel: QuoteShowViewModel by viewModels {
+        QuoteShowViewModelFactory(inspirifyApplication.inspirifyComponent)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel =
-            ViewModelProvider(this).get(QuoteShowViewModel::class.java)
 
         _binding = FragmentQuoteShowBinding.inflate(inflater, container, false)
         val root: View = binding.root
