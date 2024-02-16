@@ -1,6 +1,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
+    id("kotlin-android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -15,6 +18,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    dataBinding {
+        enable = true
     }
 
     buildTypes {
@@ -39,16 +46,64 @@ android {
 }
 
 dependencies {
+    val androidCoreKtxVersion = "1.12.0"
+    val androidMaterialVersion = "1.11.0"
+    val appCompatVersion = "1.6.1"
+    val constraintLayoutVersion = "2.1.4"
+    val coroutinesAdapterVersion = "0.9.2"
+    val coroutinesVersion = "1.7.3"
+    val daggerVersion = "2.50"
+    val espressoVersion = "3.5.1"
+    val jUnitVersion = "4.13.2"
+    val jUnitExtVersion = "1.1.5"
+    val lifecycleVersion = "2.7.0"
+    val navVersion = "2.7.6"
+    val okHttpVersion = "4.12.0"
+    val retrofitVersion = "2.9.0"
+    val retrofitGsonConverterVersion = "2.8.0"
+    val roomVersion = "2.6.1"
 
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    // AndroidX Core and UI Components
+    implementation("androidx.core:core-ktx:$androidCoreKtxVersion")
+    implementation("androidx.appcompat:appcompat:$appCompatVersion")
+    implementation("com.google.android.material:material:$androidMaterialVersion")
+    implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+
+    // Retrofit for network operations
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitGsonConverterVersion")
+
+    // Navigation Components
+    implementation("androidx.navigation:navigation-fragment-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-ui-ktx:$navVersion")
+    implementation("androidx.navigation:navigation-dynamic-features-fragment:$navVersion")
+    androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
+
+    // Dagger for Dependency Injection
+    implementation("com.google.dagger:dagger:$daggerVersion")
+    kapt("com.google.dagger:dagger-compiler:$daggerVersion")
+
+    // OkHttp for HTTP requests
+    implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
+
+    // Lifecycle Components
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+
+    // Room Database
+    implementation("androidx.room:room-runtime:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+
+    // Coroutines for asynchronous programming
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$coroutinesAdapterVersion")
+
+    // Testing
+    testImplementation("junit:junit:$jUnitVersion")
+    androidTestImplementation("androidx.test.ext:junit:$jUnitExtVersion")
+    androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
 }

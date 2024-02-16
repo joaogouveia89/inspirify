@@ -23,7 +23,6 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingHorizontal="12dp"
-        android:text="If you find yourself criticizing other people, you’re probably doing it out of resistance. When we see others beginning to live their authentic selves, it drives us crazy if we have not lived out our own."
         android:textSize="18sp"
         android:textColor="#333333"
         android:paddingBottom="8dp"
@@ -34,7 +33,6 @@
         android:id="@+id/author_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="The Art of War"
         android:textSize="20sp"
         android:paddingHorizontal="12dp"
         android:textColor="#666666"
@@ -43,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/favorite_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_like"
