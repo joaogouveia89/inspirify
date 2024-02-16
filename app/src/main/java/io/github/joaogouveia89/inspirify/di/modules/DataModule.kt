@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
-import io.github.joaogouveia89.inspirify.dataSources.api.retrofit.RetrofitZenQuotes
-import io.github.joaogouveia89.inspirify.dataSources.local.DATABASE_NAME
-import io.github.joaogouveia89.inspirify.dataSources.local.LocalDb
+import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
+import io.github.joaogouveia89.inspirify.data.local.DATABASE_NAME
+import io.github.joaogouveia89.inspirify.data.local.LocalDb
 import javax.inject.Singleton
 
 @Module

@@ -1,9 +1,9 @@
-package io.github.joaogouveia89.inspirify.dataSources.local
+package io.github.joaogouveia89.inspirify.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import io.github.joaogouveia89.inspirify.dataSources.local.daos.FavoriteDao
-import io.github.joaogouveia89.inspirify.dataSources.local.entities.Favorite
+import io.github.joaogouveia89.inspirify.data.local.daos.FavoriteDao
+import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 
 
 @Database(

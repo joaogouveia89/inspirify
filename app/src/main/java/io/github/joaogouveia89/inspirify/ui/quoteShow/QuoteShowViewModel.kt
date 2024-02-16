@@ -3,10 +3,14 @@ package io.github.joaogouveia89.inspirify.ui.quoteShow
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import io.github.joaogouveia89.inspirify.R
+import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.di.InspirifyComponent
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteFavoriteUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteShowUseCase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class QuotesInputs{
@@ -15,7 +19,7 @@ class QuotesInputs{
 }
 
 interface QuotesOutputs{
-    val quote: LiveData<Quote>
+    val quoteRequestStatus: LiveData<DataRequest>
 }
 
 interface QuoteViewModelType{
@@ -23,6 +27,10 @@ interface QuoteViewModelType{
     val outputs: QuotesOutputs
 }
 class QuoteShowViewModel(inspirifyComponent: InspirifyComponent): ViewModel(), QuoteViewModelType, QuotesOutputs {
+
+    init {
+        inspirifyComponent.inject(this)
+    }
 
     override val outputs = this
     override val inputs = QuotesInputs()
@@ -33,15 +41,13 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent): ViewModel(), Q
     @Inject
     lateinit var quoteFavoriteUseCase: QuoteFavoriteUseCase
 
-    val currentQuote = Quote(
-        message = "If you find yourself criticizing other people, you’re probably doing it out of resistance. When we see others beginning to live their authentic selves, it drives us crazy if we have not lived out our own.",
-        author = "The Art of War",
-        favoriteIconRes = R.drawable.ic_like
-    )
+    override val quoteRequestStatus: LiveData<DataRequest> = quoteShowUseCase.dataRequest
 
-    override val quote: LiveData<Quote> = MutableLiveData(currentQuote)
-
-    init {
-        inspirifyComponent.inject(this)
+    fun fetchRandomQuote(){
+        viewModelScope.launch(Dispatchers.IO) {
+            quoteShowUseCase.execute()
+        }
     }
+
+
 }

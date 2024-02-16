@@ -1,12 +1,12 @@
-package io.github.joaogouveia89.inspirify.dataSources.local.daos
+package io.github.joaogouveia89.inspirify.data.local.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import io.github.joaogouveia89.inspirify.dataSources.local.GET_FAVORITES_ALL
-import io.github.joaogouveia89.inspirify.dataSources.local.entities.Favorite
+import io.github.joaogouveia89.inspirify.data.local.GET_FAVORITES_ALL
+import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 
 @Dao
 interface FavoriteDao {

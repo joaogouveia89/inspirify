@@ -1,5 +1,8 @@
-package io.github.joaogouveia89.inspirify.dataSources.api.retrofit
+package io.github.joaogouveia89.inspirify.data.api.retrofit
 
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -8,6 +11,7 @@ const val FETCH_RANDOM_QUOTE_URL = "random/"
 const val BASE_URL = "https://zenquotes.io/api/"
 
 class RetrofitZenQuotes {
+
     private  val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())

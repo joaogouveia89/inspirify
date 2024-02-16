@@ -1,4 +1,4 @@
-package io.github.joaogouveia89.inspirify.dataSources.local.entities
+package io.github.joaogouveia89.inspirify.data.local.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

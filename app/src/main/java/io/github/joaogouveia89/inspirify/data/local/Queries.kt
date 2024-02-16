@@ -1,4 +1,4 @@
-package io.github.joaogouveia89.inspirify.dataSources.local
+package io.github.joaogouveia89.inspirify.data.local
 
 const val GET_FAVORITES_ALL = "SELECT * FROM Favorite"
 
