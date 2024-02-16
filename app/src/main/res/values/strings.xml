@@ -2,6 +2,5 @@
     <string name="app_name">Inspirify</string>
     <string name="title_quote">Quote</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
-    <string name="quote_open">\"</string>
+    <string name="title_favorites">Favorites</string>
 </resources>
