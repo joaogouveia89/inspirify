@@ -8,7 +8,7 @@
 
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/double_quote_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_quotation_mark"
@@ -16,4 +16,41 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/quote_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="12dp"
+        android:text="If you find yourself criticizing other people, you’re probably doing it out of resistance. When we see others beginning to live their authentic selves, it drives us crazy if we have not lived out our own."
+        android:textSize="18sp"
+        android:textColor="#333333"
+        android:paddingBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/double_quote_iv"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/author_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The Art of War"
+        android:textSize="20sp"
+        android:paddingHorizontal="12dp"
+        android:textColor="#666666"
+        android:textStyle="italic"
+        app:layout_constraintTop_toBottomOf="@id/quote_tv"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_like"
+        android:paddingHorizontal="24dp"
+        app:layout_constraintTop_toBottomOf="@id/quote_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/author_tv"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
