@@ -5,13 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import io.github.joaogouveia89.inspirify.InspirifyApplication
-import io.github.joaogouveia89.inspirify.R
 import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.databinding.FragmentQuoteShowBinding
 
@@ -31,16 +28,18 @@ class QuoteShowFragment : Fragment() {
         QuoteShowViewModelFactory(inspirifyApplication.inspirifyComponent)
     }
 
-    private val quoteRequestStatusObserver = Observer<DataRequest>{ response ->
-        when(response){
+    private val quoteRequestStatusObserver = Observer<DataRequest> { response ->
+        when (response) {
             is DataRequest.OnProgress -> {
 
             }
+
             is DataRequest.Success<*> -> {
                 val quote = response.data as? Quote
                 binding.quote = quote
             }
-            is DataRequest.Failed ->{
+
+            is DataRequest.Failed -> {
                 Log.i("JOAODEBUG", response.errorMessage)
             }
         }

@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.joaogouveia89.inspirify.R
 import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.di.InspirifyComponent
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteFavoriteUseCase
@@ -13,20 +12,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class QuotesInputs{
+class QuotesInputs {
     val onRefresh = MutableLiveData<Unit>()
     val onFavoriteClick = MutableLiveData<Unit>()
 }
 
-interface QuotesOutputs{
+interface QuotesOutputs {
     val quoteRequestStatus: LiveData<DataRequest>
 }
 
-interface QuoteViewModelType{
+interface QuoteViewModelType {
     val inputs: QuotesInputs
     val outputs: QuotesOutputs
 }
-class QuoteShowViewModel(inspirifyComponent: InspirifyComponent): ViewModel(), QuoteViewModelType, QuotesOutputs {
+
+class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), QuoteViewModelType,
+    QuotesOutputs {
 
     init {
         inspirifyComponent.inject(this)
@@ -43,7 +44,7 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent): ViewModel(), Q
 
     override val quoteRequestStatus: LiveData<DataRequest> = quoteShowUseCase.dataRequest
 
-    fun fetchRandomQuote(){
+    fun fetchRandomQuote() {
         viewModelScope.launch(Dispatchers.IO) {
             quoteShowUseCase.execute()
         }

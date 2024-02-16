@@ -11,7 +11,7 @@ import javax.inject.Inject
 class QuoteShowRepository @Inject constructor(
     private val api: RetrofitZenQuotes,
     private val localDb: LocalDb
-)  {
+) {
 
     private val _dataRequest = MutableLiveData<DataRequest>()
 
@@ -27,7 +27,7 @@ class QuoteShowRepository @Inject constructor(
                     _dataRequest.postValue(DataRequest.Success(it.first().asQuote()))
                 }
             }
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             e.message?.let { errorMessage ->
                 _dataRequest.postValue(DataRequest.Failed(errorMessage))
             }

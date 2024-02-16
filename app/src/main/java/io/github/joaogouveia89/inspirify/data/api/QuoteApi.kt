@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class QuoteApi(
     @SerializedName("q") val quote: String,
     @SerializedName("a") val author: String
-): Parcelable
+) : Parcelable
 
 fun QuoteApi.asQuote() = Quote(
     message = this.quote,

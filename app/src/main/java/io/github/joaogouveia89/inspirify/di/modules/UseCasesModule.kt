@@ -12,5 +12,6 @@ class UseCasesModule {
     fun provideQuoteShowUseCase(repository: QuoteShowRepository) = QuoteShowUseCase(repository)
 
     @Provides
-    fun provideQuoteFavoriteUseCase(repository: QuoteShowRepository) = QuoteFavoriteUseCase(repository)
+    fun provideQuoteFavoriteUseCase(repository: QuoteShowRepository) =
+        QuoteFavoriteUseCase(repository)
 }

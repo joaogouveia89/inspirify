@@ -1,4 +1,5 @@
 package io.github.joaogouveia89.inspirify.data
+
 @Suppress("ConvertObjectToDataObject")
 /*
  * data object to OnProgress is not needed, the advantage of having a

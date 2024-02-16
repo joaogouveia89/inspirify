@@ -10,8 +10,7 @@ import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowRepository
 class RepositoriesModule {
 
     @Provides
-    fun provideQuoteShowRepository(api: RetrofitZenQuotes, localDb: LocalDb)
-    = QuoteShowRepository(
+    fun provideQuoteShowRepository(api: RetrofitZenQuotes, localDb: LocalDb) = QuoteShowRepository(
         api = api,
         localDb = localDb
     )

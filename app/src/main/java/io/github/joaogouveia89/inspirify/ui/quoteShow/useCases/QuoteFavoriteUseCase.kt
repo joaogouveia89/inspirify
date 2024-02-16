@@ -5,6 +5,4 @@ import javax.inject.Inject
 
 class QuoteFavoriteUseCase @Inject constructor(
     private val quoteShowRepository: QuoteShowRepository
-){
-
-}
+)

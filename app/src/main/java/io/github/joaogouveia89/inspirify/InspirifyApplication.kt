@@ -7,7 +7,7 @@ import io.github.joaogouveia89.inspirify.di.modules.DataModule
 import io.github.joaogouveia89.inspirify.di.modules.RepositoriesModule
 import io.github.joaogouveia89.inspirify.di.modules.UseCasesModule
 
-class InspirifyApplication: Application() {
+class InspirifyApplication : Application() {
     val inspirifyComponent: InspirifyComponent by lazy {
         DaggerInspirifyComponent.builder().apply {
             dataModule(DataModule(context = baseContext))
