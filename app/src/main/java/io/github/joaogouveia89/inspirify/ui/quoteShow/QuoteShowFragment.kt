@@ -53,6 +53,12 @@ class QuoteShowFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // I dont want to call the fetching action on fragment resuming
+        viewModel.fetchRandomQuote()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -72,8 +78,6 @@ class QuoteShowFragment : Fragment() {
         binding.favoriteIv.setOnClickListener {
             viewModel.inputs.onFavoriteClick.postValue(Unit)
         }
-
-        viewModel.fetchRandomQuote()
     }
 
     override fun onDestroyView() {
