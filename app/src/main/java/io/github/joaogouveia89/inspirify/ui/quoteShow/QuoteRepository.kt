@@ -7,7 +7,6 @@ import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.data.api.asQuote
 import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
 import io.github.joaogouveia89.inspirify.data.local.LocalDb
-import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -30,13 +29,13 @@ class QuoteRepository @Inject constructor(
                 response.body()?.let {
                     it.first().let { quote ->
                         val numberOfIncidences = runBlocking {
-                            localDb.favoriteDao().countReincidenceOfQuotes(
+                            localDb.favoriteDao().getQuoteLocally(
                                 quote = quote.quote,
                                 author = quote.author
                             )
                         }
                         _dataRequest.postValue(DataRequest.Success(quote.asQuote(
-                            isFavorite = numberOfIncidences > 0
+                            isFavorite = numberOfIncidences.isNotEmpty()
                         )))
                     }
                 }
@@ -51,14 +50,32 @@ class QuoteRepository @Inject constructor(
     suspend fun addFavorite(quote: Quote){
         _dataRequest.postValue(DataRequest.OnProgress)
 
-        val code = localDb.favoriteDao().addToFavorites(quote.asFavorite())
-
-        if(code == -1L) _dataRequest.postValue(DataRequest.Failed("Insert failed"))
-        else {
-            val quoteWithFavoriteSign = quote.copy(
-                    favoriteIconRes = R.drawable.ic_like_fill
+        val localQuote = runBlocking {
+            localDb.favoriteDao().getQuoteLocally(
+                quote = quote.message,
+                author = quote.author
             )
-            _dataRequest.postValue(DataRequest.Success(quoteWithFavoriteSign))
+        }
+
+        if(localQuote.isNotEmpty()){
+            val code = localDb.favoriteDao().deleteFromFavorites(quote.asFavorite(localQuote.first().id))
+            if(code == -1) _dataRequest.postValue(DataRequest.Failed("Delete failed"))
+            else {
+                val quoteWithFavoriteSign = quote.copy(
+                    favoriteIconRes = R.drawable.ic_like
+                )
+                _dataRequest.postValue(DataRequest.Success(quoteWithFavoriteSign))
+            }
+        }else{
+            val code = localDb.favoriteDao().addToFavorites(quote.asFavorite())
+
+            if(code == -1L) _dataRequest.postValue(DataRequest.Failed("Insert failed"))
+            else {
+                val quoteWithFavoriteSign = quote.copy(
+                    favoriteIconRes = R.drawable.ic_like_fill
+                )
+                _dataRequest.postValue(DataRequest.Success(quoteWithFavoriteSign))
+            }
         }
     }
 }

@@ -9,7 +9,8 @@ data class Quote(
     @DrawableRes val favoriteIconRes: Int
 )
 
-fun Quote.asFavorite() = Favorite(
+fun Quote.asFavorite(id: Long = 0) = Favorite(
+    id = id,
     quote = this.message,
     author = this.author
 )
