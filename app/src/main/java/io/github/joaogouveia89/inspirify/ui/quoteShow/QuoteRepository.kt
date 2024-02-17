@@ -34,9 +34,13 @@ class QuoteRepository @Inject constructor(
                                 author = quote.author
                             )
                         }
-                        _dataRequest.postValue(DataRequest.Success(quote.asQuote(
-                            isFavorite = numberOfIncidences.isNotEmpty()
-                        )))
+                        _dataRequest.postValue(
+                            DataRequest.Success(
+                                quote.asQuote(
+                                    isFavorite = numberOfIncidences.isNotEmpty()
+                                )
+                            )
+                        )
                     }
                 }
             }
@@ -47,7 +51,7 @@ class QuoteRepository @Inject constructor(
         }
     }
 
-    suspend fun addFavorite(quote: Quote){
+    suspend fun addFavorite(quote: Quote) {
         _dataRequest.postValue(DataRequest.OnProgress)
 
         val localQuote = runBlocking {
@@ -57,19 +61,20 @@ class QuoteRepository @Inject constructor(
             )
         }
 
-        if(localQuote.isNotEmpty()){
-            val code = localDb.favoriteDao().deleteFromFavorites(quote.asFavorite(localQuote.first().id))
-            if(code == -1) _dataRequest.postValue(DataRequest.Failed("Delete failed"))
+        if (localQuote.isNotEmpty()) {
+            val code =
+                localDb.favoriteDao().deleteFromFavorites(quote.asFavorite(localQuote.first().id))
+            if (code == -1) _dataRequest.postValue(DataRequest.Failed("Delete failed"))
             else {
                 val quoteWithFavoriteSign = quote.copy(
                     favoriteIconRes = R.drawable.ic_like
                 )
                 _dataRequest.postValue(DataRequest.Success(quoteWithFavoriteSign))
             }
-        }else{
+        } else {
             val code = localDb.favoriteDao().addToFavorites(quote.asFavorite())
 
-            if(code == -1L) _dataRequest.postValue(DataRequest.Failed("Insert failed"))
+            if (code == -1L) _dataRequest.postValue(DataRequest.Failed("Insert failed"))
             else {
                 val quoteWithFavoriteSign = quote.copy(
                     favoriteIconRes = R.drawable.ic_like_fill

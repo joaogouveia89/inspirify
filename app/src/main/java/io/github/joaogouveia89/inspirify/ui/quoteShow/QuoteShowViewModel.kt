@@ -1,6 +1,5 @@
 package io.github.joaogouveia89.inspirify.ui.quoteShow
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -34,9 +33,9 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
 
     private val onFavoriteClickObserver = Observer<Unit> {
         quoteShowUseCase.dataRequest.value?.let {
-            if(it is DataRequest.Success<*>){
+            if (it is DataRequest.Success<*>) {
                 val currentQuote = it.data as? Quote
-                if(currentQuote != null){
+                if (currentQuote != null) {
                     viewModelScope.launch(Dispatchers.IO) {
                         quoteFavoriteUseCase.execute(currentQuote)
                     }

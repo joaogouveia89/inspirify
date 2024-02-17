@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class QuoteFavoriteUseCase @Inject constructor(
     private val quoteRepository: QuoteRepository
-){
+) {
     val dataRequest: LiveData<DataRequest>
         get() = quoteRepository.dataRequest
 
