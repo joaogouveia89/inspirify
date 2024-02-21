@@ -47,6 +47,7 @@ android {
 
 dependencies {
     val androidCoreKtxVersion = "1.12.0"
+    val androidCoreTesting = "2.2.0"
     val androidMaterialVersion = "1.11.0"
     val appCompatVersion = "1.6.1"
     val constraintLayoutVersion = "2.1.4"
@@ -57,6 +58,7 @@ dependencies {
     val jUnitVersion = "4.13.2"
     val jUnitExtVersion = "1.1.5"
     val lifecycleVersion = "2.7.0"
+    val mockkVersion = "1.13.9"
     val navVersion = "2.7.6"
     val okHttpVersion = "4.12.0"
     val retrofitVersion = "2.9.0"
@@ -101,9 +103,13 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
     implementation("com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$coroutinesAdapterVersion")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
     // Testing
     testImplementation("junit:junit:$jUnitVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("androidx.arch.core:core-testing:$androidCoreTesting")
     androidTestImplementation("androidx.test.ext:junit:$jUnitExtVersion")
     androidTestImplementation("androidx.test.espresso:espresso-core:$espressoVersion")
+
 }
