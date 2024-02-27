@@ -69,7 +69,7 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
 
     override val quoteFavoriteUpdateStatus: LiveData<DataRequest> = quoteFavoriteUseCase.dataRequest
 
-    suspend private fun fetchRandomQuote() {
+    private suspend fun fetchRandomQuote() {
         quoteShowUseCase.execute()
     }
 
