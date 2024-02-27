@@ -1,6 +1,6 @@
 package io.github.joaogouveia89.inspirify.data.local
 
-const val GET_FAVORITES_ALL = "SELECT * FROM Favorite"
+const val GET_FAVORITES_ALL = "SELECT * FROM Favorite ORDER BY id DESC"
 
 const val FETCH_QUOTE_LOCALLY = "SELECT * FROM favorite WHERE quote = :quote AND author = :author"
 

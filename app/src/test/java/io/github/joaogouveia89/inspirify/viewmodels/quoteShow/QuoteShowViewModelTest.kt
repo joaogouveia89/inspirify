@@ -6,7 +6,7 @@ import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.ui.quoteShow.Quote
 import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModel
 import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModelFactory
-import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteFavoriteUseCase
+import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteAddToFavoriteUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteShowUseCase
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -28,7 +28,7 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
 
     // Mock dependencies
     private val quoteShowUseCase: QuoteShowUseCase = mockk()
-    private val quoteFavoriteUseCase: QuoteFavoriteUseCase = mockk()
+    private val quoteAddToFavoriteUseCase: QuoteAddToFavoriteUseCase = mockk()
 
     // Lateinit ViewModel and ViewModelFactory
     private lateinit var viewModel: QuoteShowViewModel
@@ -40,12 +40,12 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
         every { inspirifyComponent.inject(any()) } answers {
             val viewModel: QuoteShowViewModel = firstArg()
             viewModel.quoteShowUseCase = quoteShowUseCase
-            viewModel.quoteFavoriteUseCase = quoteFavoriteUseCase
+            viewModel.quoteAddToFavoriteUseCase = quoteAddToFavoriteUseCase
         }
 
         // Mock the behavior of getDataRequest() function in QuoteShowUseCase
         every { quoteShowUseCase.dataRequest } returns MutableLiveData()
-        every { quoteFavoriteUseCase.dataRequest } returns MutableLiveData()
+        every { quoteAddToFavoriteUseCase.dataRequest } returns MutableLiveData()
 
         // Pass the mocked component to your ViewModelFactory
         viewModelFactory = QuoteShowViewModelFactory(inspirifyComponent)
@@ -96,6 +96,6 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
         coEvery { quoteShowUseCase.dataRequest.value }.returns(DataRequest.Success(quote))
 
         // Mock the behavior of quoteFavoriteUseCase.execute
-        coEvery { quoteFavoriteUseCase.execute(quote) } just runs
+        coEvery { quoteAddToFavoriteUseCase.execute(quote) } just runs
     }
 }

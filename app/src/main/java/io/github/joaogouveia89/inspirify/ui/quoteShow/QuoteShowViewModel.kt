@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.di.InspirifyComponent
-import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteFavoriteUseCase
+import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteAddToFavoriteUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteShowUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -37,7 +37,7 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
                 val currentQuote = it.data as? Quote
                 if (currentQuote != null) {
                     viewModelScope.launch(Dispatchers.IO) {
-                        quoteFavoriteUseCase.execute(currentQuote)
+                        quoteAddToFavoriteUseCase.execute(currentQuote)
                     }
                 }
             }
@@ -63,11 +63,12 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     lateinit var quoteShowUseCase: QuoteShowUseCase
 
     @Inject
-    lateinit var quoteFavoriteUseCase: QuoteFavoriteUseCase
+    lateinit var quoteAddToFavoriteUseCase: QuoteAddToFavoriteUseCase
 
     override val quoteRequestStatus: LiveData<DataRequest> = quoteShowUseCase.dataRequest
 
-    override val quoteFavoriteUpdateStatus: LiveData<DataRequest> = quoteFavoriteUseCase.dataRequest
+    override val quoteFavoriteUpdateStatus: LiveData<DataRequest> =
+        quoteAddToFavoriteUseCase.dataRequest
 
     private suspend fun fetchRandomQuote() {
         quoteShowUseCase.execute()

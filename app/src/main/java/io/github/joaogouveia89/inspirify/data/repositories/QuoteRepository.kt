@@ -1,4 +1,4 @@
-package io.github.joaogouveia89.inspirify.ui.quoteShow
+package io.github.joaogouveia89.inspirify.data.repositories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,6 +7,8 @@ import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.data.api.asQuote
 import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
 import io.github.joaogouveia89.inspirify.data.local.LocalDb
+import io.github.joaogouveia89.inspirify.ui.quoteShow.Quote
+import io.github.joaogouveia89.inspirify.ui.quoteShow.asFavorite
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -87,6 +89,14 @@ class QuoteRepository @Inject constructor(
                 )
                 _dataRequest.postValue(DataRequest.Success(quoteWithFavoriteSign))
             }
+        }
+    }
+
+    suspend fun getAllFavorites() {
+        _dataRequest.postValue(DataRequest.OnProgress)
+        runBlocking {
+            val favorites = localDb.favoriteDao().getAll()
+            _dataRequest.postValue(DataRequest.Success(favorites))
         }
     }
 }

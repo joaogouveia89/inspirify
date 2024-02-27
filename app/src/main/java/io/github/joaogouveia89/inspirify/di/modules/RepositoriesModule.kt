@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
 import io.github.joaogouveia89.inspirify.data.local.LocalDb
-import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteRepository
+import io.github.joaogouveia89.inspirify.data.repositories.QuoteRepository
 
 @Module
 class RepositoriesModule {
