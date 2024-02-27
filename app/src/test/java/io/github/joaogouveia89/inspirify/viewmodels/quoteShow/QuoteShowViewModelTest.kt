@@ -44,8 +44,8 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
         }
 
         // Mock the behavior of getDataRequest() function in QuoteShowUseCase
-        every { quoteShowUseCase.dataRequest } returns MutableLiveData<DataRequest>()
-        every { quoteFavoriteUseCase.dataRequest } returns MutableLiveData<DataRequest>()
+        every { quoteShowUseCase.dataRequest } returns MutableLiveData()
+        every { quoteFavoriteUseCase.dataRequest } returns MutableLiveData()
 
         // Pass the mocked component to your ViewModelFactory
         viewModelFactory = QuoteShowViewModelFactory(inspirifyComponent)
@@ -58,7 +58,7 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
     }
 
     @Test
-    fun `fetchRandomQuote should execute quoteShowUseCase`() = runTest {
+    fun `requestNewData should execute quoteShowUseCase`() = runTest {
         // Given - Nothing to do here
         coEvery { quoteShowUseCase.execute() } just Runs
 
