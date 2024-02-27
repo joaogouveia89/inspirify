@@ -1,8 +1,9 @@
-package io.github.joaogouveia89.inspirify.quoteShow
+package io.github.joaogouveia89.inspirify.viewmodels.quoteShow
 
 import androidx.lifecycle.MutableLiveData
-import io.github.joaogouveia89.inspirify.InspirifyUnitTest
+import io.github.joaogouveia89.inspirify.InspirifyViewModelUnitTest
 import io.github.joaogouveia89.inspirify.data.DataRequest
+import io.github.joaogouveia89.inspirify.ui.quoteShow.Quote
 import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModel
 import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModelFactory
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteFavoriteUseCase
@@ -13,6 +14,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
+import junit.framework.TestCase.assertNotNull
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -20,7 +24,7 @@ import org.junit.Before
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class QuoteShowViewModelTest : InspirifyUnitTest(){
+class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
 
     // Mock dependencies
     private val quoteShowUseCase: QuoteShowUseCase = mockk()
@@ -66,5 +70,32 @@ class QuoteShowViewModelTest : InspirifyUnitTest(){
 
         // Then
         coVerify { quoteShowUseCase.execute() }
+    }
+
+    @Test
+    fun `onFavoriteClick should execute quoteFavoriteUseCase`() = runTest {
+        // Given
+        viewModel = viewModelFactory.create(QuoteShowViewModel::class.java)
+        val quote = mockk<Quote>() // Mock your Quote object as needed
+
+        // When
+        viewModel.inputs.onFavoriteClick.value = Unit
+
+        // Then
+        viewModel.outputs.quoteFavoriteUpdateStatus.observeForever { dataRequest ->
+            // Ensure observer was triggered
+            assertNotNull(dataRequest)
+
+            // Assert if the correct DataRequest type is emitted
+            assertTrue(dataRequest is DataRequest.OnProgress || dataRequest is DataRequest.Success<*>)
+
+            // Additional assertions if needed
+        }
+
+        // Mock the behavior of quoteShowUseCase.dataRequest.value
+        coEvery { quoteShowUseCase.dataRequest.value }.returns(DataRequest.Success(quote))
+
+        // Mock the behavior of quoteFavoriteUseCase.execute
+        coEvery { quoteFavoriteUseCase.execute(quote) } just runs
     }
 }

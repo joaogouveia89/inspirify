@@ -7,7 +7,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Rule
 
 @ExperimentalCoroutinesApi
-open class InspirifyUnitTest {
+open class InspirifyViewModelUnitTest {
     // Rule to force execution of tasks synchronously
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()

@@ -43,6 +43,12 @@ class QuoteRepository @Inject constructor(
                         )
                     }
                 }
+            } else {
+                _dataRequest.postValue(
+                    DataRequest.Failed(
+                        response.errorBody()?.string() ?: "Unknown error occurred"
+                    )
+                )
             }
         } catch (e: Exception) {
             e.message?.let { errorMessage ->
