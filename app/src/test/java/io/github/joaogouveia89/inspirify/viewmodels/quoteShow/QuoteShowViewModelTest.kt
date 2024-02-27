@@ -66,7 +66,7 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest(){
         viewModel = viewModelFactory.create(QuoteShowViewModel::class.java)
 
         // When
-        viewModel.fetchRandomQuote()
+        viewModel.inputs.requestNewData.postValue(Unit)
 
         // Then
         coVerify { quoteShowUseCase.execute() }

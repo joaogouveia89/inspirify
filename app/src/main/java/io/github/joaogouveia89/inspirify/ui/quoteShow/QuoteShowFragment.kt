@@ -55,8 +55,8 @@ class QuoteShowFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // I dont want to call the fetching action on fragment resuming
-        viewModel.fetchRandomQuote()
+        // I dont want to fetch new quote on fragment resuming
+        viewModel.inputs.requestNewData.postValue(Unit)
     }
 
     override fun onCreateView(
@@ -72,6 +72,11 @@ class QuoteShowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.swiperefresh.setOnRefreshListener {
+            binding.swiperefresh.isRefreshing = false
+            viewModel.inputs.requestNewData.postValue(Unit)
+        }
 
         viewModel.quoteRequestStatus.observe(viewLifecycleOwner, onQuoteUpdateObserver)
         viewModel.quoteFavoriteUpdateStatus.observe(viewLifecycleOwner, onQuoteUpdateObserver)

@@ -64,12 +64,14 @@ dependencies {
     val retrofitVersion = "2.9.0"
     val retrofitGsonConverterVersion = "2.8.0"
     val roomVersion = "2.6.1"
+    val swipeRefreshLayoutVersion = "1.2.0-alpha01"
 
     // AndroidX Core and UI Components
     implementation("androidx.core:core-ktx:$androidCoreKtxVersion")
     implementation("androidx.appcompat:appcompat:$appCompatVersion")
     implementation("com.google.android.material:material:$androidMaterialVersion")
     implementation("androidx.constraintlayout:constraintlayout:$constraintLayoutVersion")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swipeRefreshLayoutVersion")
 
     // Retrofit for network operations
     implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")

@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class QuotesInputs {
-    val onRefresh = MutableLiveData<Unit>()
+    val requestNewData = MutableLiveData<Unit>()
     val onFavoriteClick = MutableLiveData<Unit>()
 }
 
@@ -44,12 +44,19 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
         }
     }
 
+    private val requestNewDataObserver = Observer<Unit> {
+        viewModelScope.launch(Dispatchers.IO) {
+            fetchRandomQuote()
+        }
+    }
+
     override val outputs = this
     override val inputs = QuotesInputs()
 
     init {
         inspirifyComponent.inject(this)
         inputs.onFavoriteClick.observeForever(onFavoriteClickObserver)
+        inputs.requestNewData.observeForever(requestNewDataObserver)
     }
 
     @Inject
@@ -62,14 +69,13 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
 
     override val quoteFavoriteUpdateStatus: LiveData<DataRequest> = quoteFavoriteUseCase.dataRequest
 
-    fun fetchRandomQuote() {
-        viewModelScope.launch(Dispatchers.IO) {
-            quoteShowUseCase.execute()
-        }
+    suspend private fun fetchRandomQuote() {
+        quoteShowUseCase.execute()
     }
 
     override fun onCleared() {
         super.onCleared()
         inputs.onFavoriteClick.removeObserver(onFavoriteClickObserver)
+        inputs.requestNewData.removeObserver(requestNewDataObserver)
     }
 }
