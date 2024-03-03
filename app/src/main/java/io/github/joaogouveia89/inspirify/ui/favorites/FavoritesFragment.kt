@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import io.github.joaogouveia89.inspirify.InspirifyApplication
 import io.github.joaogouveia89.inspirify.R
@@ -69,6 +70,43 @@ class FavoritesFragment : Fragment() {
 
     }
 
+    private var itemTouchHelper: ItemTouchHelper? = null
+
+    /*
+    * Initializes the swipe-to-delete callback lazily. This ensures that the callback is
+    * created only when it's accessed for the first time. Since the SwipeToDeleteCallback
+    * requires a valid context, using lazy ensures that it's initialized after the fragment
+    * is attached to a context. This avoids IllegalStateExceptions related to accessing
+    * requireContext() before the fragment is attached. The callback is created as an
+    * anonymous object, overriding the necessary methods to handle swipe actions in the
+    * RecyclerView.
+    */
+    private val swipeToDeleteCallback: SwipeToDeleteCallback by lazy {
+        object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val favorite = adapter.currentList[position]
+
+                // dialog for confirmation
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(resources.getString(R.string.confirm_delete))
+                    .setMessage(resources.getString(R.string.favorite_delete_message, favorite.author))
+                    .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
+                        // Respond to negative button press
+                        adapter.notifyItemChanged(position)
+                    }
+                    .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
+                        // Respond to positive button press
+                        adapter.notifyItemChanged(position)
+                    }
+                    .show()
+
+                // Handle the swipe action
+                // Update your dataset (e.g., remove the item from the list)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -90,16 +128,11 @@ class FavoritesFragment : Fragment() {
             favoritesRequestStatusObserver
         )
 
-        val itemTouchHelper = ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val position = viewHolder.adapterPosition
-                val favorite = adapter.currentList[position]
-                adapter.notifyItemChanged(position)
-                // Handle the swipe action
-                // Update your dataset (e.g., remove the item from the list)
-            }
-        })
-        itemTouchHelper.attachToRecyclerView(binding.favoritesListRv)
+       if(itemTouchHelper == null){
+           itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+       }
+
+        itemTouchHelper?.attachToRecyclerView(binding.favoritesListRv)
     }
 
     override fun onDestroyView() {
