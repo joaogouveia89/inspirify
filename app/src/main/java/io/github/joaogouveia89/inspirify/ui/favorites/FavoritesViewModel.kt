@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.joaogouveia89.inspirify.data.DataRequest
+import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 import io.github.joaogouveia89.inspirify.di.InspirifyComponent
 import io.github.joaogouveia89.inspirify.ui.favorites.useCases.FetchFavoritesUseCase
 import kotlinx.coroutines.Dispatchers
@@ -18,10 +19,9 @@ class FavoritesInputs {
 }
 
 interface FavoritesOutputs {
-    val favoritesRequestStatus: LiveData<DataRequest>
-    val removeFromFavoritesStatus: LiveData<DataRequest>
-    val showFavoritesList: LiveData<Boolean>
+    val currentFavoritesList: LiveData<List<Favorite>>
     val showEmptyListMessage: LiveData<Boolean>
+    val showErrorMessage: LiveData<String>
 }
 
 interface FavoritesViewModelType {
@@ -46,6 +46,28 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
 
     }
 
+    private val fetchFavoritesObserver = Observer<DataRequest> { response ->
+        when (response) {
+            is DataRequest.OnProgress -> {
+                //binding.progressBar.visibility = View.VISIBLE
+            }
+
+            is DataRequest.Success<*> -> {
+                val favorites = response.data as? List<Favorite>
+                // binding.quote = quote
+                favorites?.let {
+                    _showEmptyListMessage.value = it.isEmpty()
+                    _currentFavoritesList.value = it
+                }
+            }
+
+            is DataRequest.Failed -> {
+                _showErrorMessage.postValue(response.errorMessage)
+            }
+        }
+
+    }
+
     @Inject
     lateinit var fetchFavoritesUseCase: FetchFavoritesUseCase
 
@@ -53,15 +75,28 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
         inspirifyComponent.inject(this)
         inputs.requestNewData.observeForever(requestNewDataObserver)
         inputs.onFavoriteDelete.observeForever(onFavoriteDeleteObserver)
+        fetchFavoritesUseCase.dataRequest.observeForever(fetchFavoritesObserver)
     }
 
-    override val favoritesRequestStatus: LiveData<DataRequest> = fetchFavoritesUseCase.dataRequest
-    override val removeFromFavoritesStatus: LiveData<DataRequest> = MutableLiveData()
-    override val showFavoritesList: LiveData<Boolean> = MutableLiveData()
-    override val showEmptyListMessage: LiveData<Boolean> = MutableLiveData()
+    private val _currentFavoritesList = MutableLiveData<List<Favorite>>()
+    private val _showErrorMessage = MutableLiveData<String>()
+    private val _showEmptyListMessage = MutableLiveData(true)
+    override val currentFavoritesList: LiveData<List<Favorite>>
+        get() = _currentFavoritesList
+
+    override val showErrorMessage: LiveData<String>
+        get() = _showErrorMessage
+
+    override val showEmptyListMessage: LiveData<Boolean>
+        get() = _showEmptyListMessage
 
     private suspend fun fetchAllFavorites() {
         fetchFavoritesUseCase.execute()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        fetchFavoritesUseCase.dataRequest.removeObserver(fetchFavoritesObserver)
     }
 
 }

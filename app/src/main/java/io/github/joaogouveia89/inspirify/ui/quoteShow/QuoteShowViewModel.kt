@@ -34,7 +34,7 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     QuotesOutputs {
 
     private val onFavoriteClickObserver = Observer<Unit> {
-        outputs.currentQuote.value?.let {quote ->
+        outputs.currentQuote.value?.let { quote ->
             viewModelScope.launch(Dispatchers.IO) {
                 quoteAddToFavoriteUseCase.execute(quote)
             }

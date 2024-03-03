@@ -1,6 +1,8 @@
 package io.github.joaogouveia89.inspirify.ui.favorites
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,7 +92,12 @@ class FavoritesFragment : Fragment() {
                 // dialog for confirmation
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(resources.getString(R.string.confirm_delete))
-                    .setMessage(resources.getString(R.string.favorite_delete_message, favorite.author))
+                    .setMessage(
+                        resources.getString(
+                            R.string.favorite_delete_message,
+                            favorite.author
+                        )
+                    )
                     .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
                         // Respond to negative button press
                         adapter.notifyItemChanged(position)
@@ -107,6 +114,10 @@ class FavoritesFragment : Fragment() {
         }
     }
 
+    private val currentFavoritesListObserver = Observer<List<Favorite>> {
+        adapter.submitList(it)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -120,17 +131,20 @@ class FavoritesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.favoritesListRv.adapter = adapter
+
+        binding.apply {
+            lifecycleOwner = this@FavoritesFragment
+            favoritesAdapter = adapter
+            viewModel = viewModel
+        }
+
+        viewModel.currentFavoritesList.observe(viewLifecycleOwner, currentFavoritesListObserver)
 
         viewModel.inputs.requestNewData.postValue(Unit)
-        viewModel.outputs.favoritesRequestStatus.observe(
-            viewLifecycleOwner,
-            favoritesRequestStatusObserver
-        )
 
-       if(itemTouchHelper == null){
-           itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
-       }
+        if (itemTouchHelper == null) {
+            itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
+        }
 
         itemTouchHelper?.attachToRecyclerView(binding.favoritesListRv)
     }

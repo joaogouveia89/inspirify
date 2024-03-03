@@ -19,7 +19,7 @@ interface OnSwipeListener {
     fun onSwiped(position: Int)
 }
 
-public abstract class SwipeToDeleteCallback(private val context: Context) :
+abstract class SwipeToDeleteCallback(private val context: Context) :
     ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
     private val mContext: Context = context
@@ -37,17 +37,27 @@ public abstract class SwipeToDeleteCallback(private val context: Context) :
         intrinsicHeight = deleteDrawable?.intrinsicHeight ?: 0
     }
 
-    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int = makeMovementFlags(0, ItemTouchHelper.LEFT)
-    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean = false
+    override fun getMovementFlags(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder
+    ): Int = makeMovementFlags(0, ItemTouchHelper.LEFT)
+
+    override fun onMove(
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        target: RecyclerView.ViewHolder
+    ): Boolean = false
+
     override fun getSwipeThreshold(viewHolder: RecyclerView.ViewHolder): Float = 0.7f
 
-    override fun onChildDraw(c: Canvas,
-                             recyclerView: RecyclerView,
-                             viewHolder: RecyclerView.ViewHolder,
-                             dX: Float,
-                             dY: Float,
-                             actionState: Int,
-                             isCurrentlyActive: Boolean
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
     ) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
 
