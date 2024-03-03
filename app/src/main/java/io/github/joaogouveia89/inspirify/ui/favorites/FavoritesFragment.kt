@@ -8,12 +8,16 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.github.joaogouveia89.inspirify.InspirifyApplication
 import io.github.joaogouveia89.inspirify.R
 import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 import io.github.joaogouveia89.inspirify.databinding.FragmentFavoritesBinding
+import io.github.joaogouveia89.inspirify.uiHelpers.recyclerView.OnSwipeListener
+import io.github.joaogouveia89.inspirify.uiHelpers.recyclerView.SwipeToDeleteCallback
 
 class FavoritesFragment : Fragment() {
 
@@ -40,7 +44,6 @@ class FavoritesFragment : Fragment() {
             }
 
             is DataRequest.Success<*> -> {
-                // binding.progressBar.visibility = View.INVISIBLE
                 val favorites = response.data as? List<Favorite>
                 // binding.quote = quote
                 favorites?.let {
@@ -56,7 +59,6 @@ class FavoritesFragment : Fragment() {
             }
 
             is DataRequest.Failed -> {
-                //binding.progressBar.visibility = View.INVISIBLE
                 view?.let {
                     Snackbar.make(it, response.errorMessage, Snackbar.LENGTH_SHORT).apply {
                         this.setBackgroundTint(ContextCompat.getColor(context, R.color.red))
@@ -87,6 +89,17 @@ class FavoritesFragment : Fragment() {
             viewLifecycleOwner,
             favoritesRequestStatusObserver
         )
+
+        val itemTouchHelper = ItemTouchHelper(object : SwipeToDeleteCallback(requireContext()) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                val favorite = adapter.currentList[position]
+                adapter.notifyItemChanged(position)
+                // Handle the swipe action
+                // Update your dataset (e.g., remove the item from the list)
+            }
+        })
+        itemTouchHelper.attachToRecyclerView(binding.favoritesListRv)
     }
 
     override fun onDestroyView() {
