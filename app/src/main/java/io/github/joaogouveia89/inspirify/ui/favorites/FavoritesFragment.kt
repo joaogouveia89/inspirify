@@ -44,9 +44,14 @@ class FavoritesFragment : Fragment() {
                 val favorites = response.data as? List<Favorite>
                 // binding.quote = quote
                 favorites?.let {
-                    adapter.submitList(it)
-                    binding.favoritesListRv.visibility = View.VISIBLE
-                    binding.noFavoritesTv.visibility = View.GONE
+                    if (it.isNotEmpty()) {
+                        adapter.submitList(it)
+                        binding.favoritesListRv.visibility = View.VISIBLE
+                        binding.noFavoritesTv.visibility = View.GONE
+                    } else {
+                        binding.favoritesListRv.visibility = View.GONE
+                        binding.noFavoritesTv.visibility = View.VISIBLE
+                    }
                 }
             }
 

@@ -20,6 +20,8 @@ class FavoritesInputs {
 interface FavoritesOutputs {
     val favoritesRequestStatus: LiveData<DataRequest>
     val removeFromFavoritesStatus: LiveData<DataRequest>
+    val showFavoritesList: LiveData<Boolean>
+    val showEmptyListMessage: LiveData<Boolean>
 }
 
 interface FavoritesViewModelType {
@@ -55,6 +57,8 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
 
     override val favoritesRequestStatus: LiveData<DataRequest> = fetchFavoritesUseCase.dataRequest
     override val removeFromFavoritesStatus: LiveData<DataRequest> = MutableLiveData()
+    override val showFavoritesList: LiveData<Boolean> = MutableLiveData()
+    override val showEmptyListMessage: LiveData<Boolean> = MutableLiveData()
 
     private suspend fun fetchAllFavorites() {
         fetchFavoritesUseCase.execute()

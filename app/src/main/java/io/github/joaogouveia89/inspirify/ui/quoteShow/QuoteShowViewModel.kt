@@ -16,11 +16,13 @@ import javax.inject.Inject
 class QuotesInputs {
     val requestNewData = MutableLiveData<Unit>()
     val onFavoriteClick = MutableLiveData<Unit>()
+    val updateQuote = MutableLiveData<Quote>()
 }
 
 interface QuotesOutputs {
-    val quoteRequestStatus: LiveData<DataRequest>
-    val quoteFavoriteUpdateStatus: LiveData<DataRequest>
+    val currentQuote: LiveData<Quote>
+    val showLoading: LiveData<Boolean>
+    val showError: LiveData<String>
 }
 
 interface QuoteViewModelType {
@@ -50,6 +52,31 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
         }
     }
 
+    private val updateQuoteObserver = Observer<Quote> {
+        _currentQuote.postValue(it)
+    }
+
+    private val onDataRequestObserver = Observer<DataRequest> { response ->
+        when (response) {
+            is DataRequest.OnProgress -> {
+                _showLoading.postValue(true)
+            }
+
+            is DataRequest.Success<*> -> {
+                _showLoading.postValue(false)
+                val quote = response.data as? Quote
+                quote?.let {
+                    _currentQuote.postValue(it)
+                }
+            }
+
+            is DataRequest.Failed -> {
+                _showLoading.postValue(false)
+                _showError.postValue(response.errorMessage)
+            }
+        }
+    }
+
     override val outputs = this
     override val inputs = QuotesInputs()
 
@@ -57,6 +84,9 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
         inspirifyComponent.inject(this)
         inputs.onFavoriteClick.observeForever(onFavoriteClickObserver)
         inputs.requestNewData.observeForever(requestNewDataObserver)
+        inputs.updateQuote.observeForever(updateQuoteObserver)
+        quoteAddToFavoriteUseCase.dataRequest.observeForever(onDataRequestObserver)
+        quoteShowUseCase.dataRequest.observeForever(onDataRequestObserver)
     }
 
     @Inject
@@ -65,10 +95,18 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     @Inject
     lateinit var quoteAddToFavoriteUseCase: QuoteAddToFavoriteUseCase
 
-    override val quoteRequestStatus: LiveData<DataRequest> = quoteShowUseCase.dataRequest
+    private val _currentQuote = MutableLiveData<Quote>()
+    private val _showLoading = MutableLiveData<Boolean>()
+    private val _showError = MutableLiveData<String>()
 
-    override val quoteFavoriteUpdateStatus: LiveData<DataRequest> =
-        quoteAddToFavoriteUseCase.dataRequest
+    override val currentQuote: LiveData<Quote>
+        get() = _currentQuote
+
+    override val showLoading: LiveData<Boolean>
+        get() = _showLoading
+    override val showError: LiveData<String>
+        get() = _showError
+
 
     private suspend fun fetchRandomQuote() {
         quoteShowUseCase.execute()
@@ -78,5 +116,8 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
         super.onCleared()
         inputs.onFavoriteClick.removeObserver(onFavoriteClickObserver)
         inputs.requestNewData.removeObserver(requestNewDataObserver)
+        inputs.updateQuote.removeObserver(updateQuoteObserver)
+        quoteAddToFavoriteUseCase.dataRequest.removeObserver(onDataRequestObserver)
+        quoteShowUseCase.dataRequest.removeObserver(onDataRequestObserver)
     }
 }
