@@ -34,14 +34,9 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     QuotesOutputs {
 
     private val onFavoriteClickObserver = Observer<Unit> {
-        quoteShowUseCase.dataRequest.value?.let {
-            if (it is DataRequest.Success<*>) {
-                val currentQuote = it.data as? Quote
-                if (currentQuote != null) {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        quoteAddToFavoriteUseCase.execute(currentQuote)
-                    }
-                }
+        outputs.currentQuote.value?.let {quote ->
+            viewModelScope.launch(Dispatchers.IO) {
+                quoteAddToFavoriteUseCase.execute(quote)
             }
         }
     }

@@ -9,8 +9,8 @@ import io.github.joaogouveia89.inspirify.data.api.asQuote
 import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
 import io.github.joaogouveia89.inspirify.data.local.LocalDb
 import io.github.joaogouveia89.inspirify.data.local.daos.FavoriteDao
-import io.github.joaogouveia89.inspirify.ui.quoteShow.Quote
 import io.github.joaogouveia89.inspirify.data.repositories.QuoteRepository
+import io.github.joaogouveia89.inspirify.ui.quoteShow.Quote
 import io.github.joaogouveia89.inspirify.ui.quoteShow.asFavorite
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -32,7 +32,8 @@ class QuoteRepositoryTest {
 
     private val api: RetrofitZenQuotes = mockk()
     private val quote = QuoteApi(quote = "quote", author = "author")
-    private val apiRandomQuoteResponseMock: Response<List<QuoteApi>> = mockk<Response<List<QuoteApi>>>()
+    private val apiRandomQuoteResponseMock: Response<List<QuoteApi>> =
+        mockk<Response<List<QuoteApi>>>()
 
     private val localDb: LocalDb = mockk()
     private val favoriteDaoMock: FavoriteDao = mockk()
@@ -52,7 +53,9 @@ class QuoteRepositoryTest {
         every { apiRandomQuoteResponseMock.isSuccessful } returns true
         every { apiRandomQuoteResponseMock.body() } returns listOf(quote)
         every { localDb.favoriteDao() } returns favoriteDaoMock
-        coEvery { favoriteDaoMock.getQuoteLocally(any<String>(), any<String>()) } returns listOf(favoriteQuote) // Assuming quote is in favorites
+        coEvery { favoriteDaoMock.getQuoteLocally(any<String>(), any<String>()) } returns listOf(
+            favoriteQuote
+        ) // Assuming quote is in favorites
 
         // When
         repository.fetchRandomQuote()
@@ -62,33 +65,42 @@ class QuoteRepositoryTest {
         assertTrue(dataRequest is DataRequest.Success<*>) // Check if it's a success state
 
         val successData = (dataRequest as DataRequest.Success<*>).data as Quote
-        assertEquals(successData.favoriteIconRes, R.drawable.ic_like_fill) // Check if the quote is marked as favorite
+        assertEquals(
+            successData.favoriteIconRes,
+            R.drawable.ic_like_fill
+        ) // Check if the quote is marked as favorite
     }
 
     @Test
-    fun `fetchRandomQuote should update LiveData with success state when API call is successful`() = runTest {
+    fun `fetchRandomQuote should update LiveData with success state when API call is successful`() =
+        runTest {
 
-        // Given
-        coEvery { api.fetchRandomQuote() } returns apiRandomQuoteResponseMock
-        every { apiRandomQuoteResponseMock.isSuccessful } returns true
-        every { apiRandomQuoteResponseMock.body() } returns listOf(quote)
-        every { localDb.favoriteDao() } returns favoriteDaoMock
-        coEvery { favoriteDaoMock.getQuoteLocally(any<String>(), any<String>()) } returns emptyList() // Assuming quote is not in favorites
+            // Given
+            coEvery { api.fetchRandomQuote() } returns apiRandomQuoteResponseMock
+            every { apiRandomQuoteResponseMock.isSuccessful } returns true
+            every { apiRandomQuoteResponseMock.body() } returns listOf(quote)
+            every { localDb.favoriteDao() } returns favoriteDaoMock
+            coEvery {
+                favoriteDaoMock.getQuoteLocally(
+                    any<String>(),
+                    any<String>()
+                )
+            } returns emptyList() // Assuming quote is not in favorites
 
-        val observer: Observer<DataRequest> = mockk(relaxed = true)
-        repository.dataRequest.observeForever(observer)
+            val observer: Observer<DataRequest> = mockk(relaxed = true)
+            repository.dataRequest.observeForever(observer)
 
-        // When
-        repository.fetchRandomQuote()
-        // Then
-        coVerify(exactly = 1) { api.fetchRandomQuote() } // Verify that the API was called
+            // When
+            repository.fetchRandomQuote()
+            // Then
+            coVerify(exactly = 1) { api.fetchRandomQuote() } // Verify that the API was called
 
-        val dataRequest = repository.dataRequest.value
-        assertTrue(dataRequest is DataRequest.Success<*>) // Check if it's a success state
+            val dataRequest = repository.dataRequest.value
+            assertTrue(dataRequest is DataRequest.Success<*>) // Check if it's a success state
 
-        val successData = (dataRequest as DataRequest.Success<*>).data
-        assertEquals(quote.asQuote(isFavorite = false), successData) // Check the data
-    }
+            val successData = (dataRequest as DataRequest.Success<*>).data
+            assertEquals(quote.asQuote(isFavorite = false), successData) // Check the data
+        }
 
     @Test
     fun `fetchRandomQuote should update LiveData with error state when API call fails`() = runTest {
@@ -108,22 +120,23 @@ class QuoteRepositoryTest {
     }
 
     @Test
-    fun `fetchRandomQuote should update LiveData with error state when API call is not successful`() = runTest {
-        // Given
-        val errorResponse = mockk<Response<List<QuoteApi>>>()
-        coEvery { api.fetchRandomQuote() } returns errorResponse
-        every { errorResponse.isSuccessful } returns false
-        every { errorResponse.errorBody()?.string() } returns errorMessage
-        val observer: Observer<DataRequest> = mockk(relaxed = true)
-        repository.dataRequest.observeForever(observer)
+    fun `fetchRandomQuote should update LiveData with error state when API call is not successful`() =
+        runTest {
+            // Given
+            val errorResponse = mockk<Response<List<QuoteApi>>>()
+            coEvery { api.fetchRandomQuote() } returns errorResponse
+            every { errorResponse.isSuccessful } returns false
+            every { errorResponse.errorBody()?.string() } returns errorMessage
+            val observer: Observer<DataRequest> = mockk(relaxed = true)
+            repository.dataRequest.observeForever(observer)
 
-        // When
-        repository.fetchRandomQuote()
+            // When
+            repository.fetchRandomQuote()
 
-        // Then
-        val dataRequest = repository.dataRequest.value
-        assertTrue(dataRequest is DataRequest.Failed)
-        val errorData = (dataRequest as DataRequest.Failed).errorMessage
-        assertEquals(errorMessage, errorData)
-    }
+            // Then
+            val dataRequest = repository.dataRequest.value
+            assertTrue(dataRequest is DataRequest.Failed)
+            val errorData = (dataRequest as DataRequest.Failed).errorMessage
+            assertEquals(errorMessage, errorData)
+        }
 }
