@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import io.github.joaogouveia89.inspirify.data.local.DELETE_FAVORITE_BY_ID
 import io.github.joaogouveia89.inspirify.data.local.FETCH_QUOTE_LOCALLY
 import io.github.joaogouveia89.inspirify.data.local.GET_FAVORITES_ALL
 import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
@@ -22,4 +23,7 @@ interface FavoriteDao {
 
     @Delete
     suspend fun deleteFromFavorites(favorite: Favorite): Int
+
+    @Query(DELETE_FAVORITE_BY_ID)
+    suspend fun deleteFavoriteById(favoriteId: Long): Int
 }

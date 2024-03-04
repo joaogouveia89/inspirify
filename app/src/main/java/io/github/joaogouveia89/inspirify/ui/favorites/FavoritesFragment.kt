@@ -66,6 +66,7 @@ class FavoritesFragment : Fragment() {
                     }
                     .setPositiveButton(resources.getString(R.string.delete)) { _, _ ->
                         // Respond to positive button press
+                        favoritesViewModel.inputs.onFavoriteDelete.postValue(favorite.id)
                         adapter.notifyItemChanged(position)
                     }
                     .show()
@@ -100,7 +101,10 @@ class FavoritesFragment : Fragment() {
             viewModel = favoritesViewModel
         }
 
-        favoritesViewModel.currentFavoritesList.observe(viewLifecycleOwner, currentFavoritesListObserver)
+        favoritesViewModel.currentFavoritesList.observe(
+            viewLifecycleOwner,
+            currentFavoritesListObserver
+        )
 
         if (itemTouchHelper == null) {
             itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)

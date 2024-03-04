@@ -99,4 +99,16 @@ class QuoteRepository @Inject constructor(
             _dataRequest.postValue(DataRequest.Success(favorites))
         }
     }
+
+    suspend fun deleteFavorite(id: Long) {
+        _dataRequest.postValue(DataRequest.OnProgress)
+        runBlocking {
+            val code = localDb.favoriteDao().deleteFavoriteById(id)
+            if (code > 0) {
+                _dataRequest.postValue(DataRequest.Success(code))
+            } else {
+                _dataRequest.postValue(DataRequest.Failed("Error deleting the favorite"))
+            }
+        }
+    }
 }
