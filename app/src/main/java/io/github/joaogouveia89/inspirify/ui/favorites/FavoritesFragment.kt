@@ -1,25 +1,19 @@
 package io.github.joaogouveia89.inspirify.ui.favorites
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import io.github.joaogouveia89.inspirify.InspirifyApplication
 import io.github.joaogouveia89.inspirify.R
-import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 import io.github.joaogouveia89.inspirify.databinding.FragmentFavoritesBinding
-import io.github.joaogouveia89.inspirify.uiHelpers.recyclerView.OnSwipeListener
 import io.github.joaogouveia89.inspirify.uiHelpers.recyclerView.SwipeToDeleteCallback
 
 class FavoritesFragment : Fragment() {
@@ -34,43 +28,11 @@ class FavoritesFragment : Fragment() {
         (requireActivity().application as InspirifyApplication)
     }
 
-    private val viewModel: FavoritesViewModel by viewModels {
+    private val favoritesViewModel: FavoritesViewModel by viewModels {
         FavoritesViewModelFactory(inspirifyApplication.inspirifyComponent)
     }
 
     private val adapter = FavoritesListAdapter()
-
-    private val favoritesRequestStatusObserver = Observer<DataRequest> { response ->
-        when (response) {
-            is DataRequest.OnProgress -> {
-                //binding.progressBar.visibility = View.VISIBLE
-            }
-
-            is DataRequest.Success<*> -> {
-                val favorites = response.data as? List<Favorite>
-                // binding.quote = quote
-                favorites?.let {
-                    if (it.isNotEmpty()) {
-                        adapter.submitList(it)
-                        binding.favoritesListRv.visibility = View.VISIBLE
-                        binding.noFavoritesTv.visibility = View.GONE
-                    } else {
-                        binding.favoritesListRv.visibility = View.GONE
-                        binding.noFavoritesTv.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            is DataRequest.Failed -> {
-                view?.let {
-                    Snackbar.make(it, response.errorMessage, Snackbar.LENGTH_SHORT).apply {
-                        this.setBackgroundTint(ContextCompat.getColor(context, R.color.red))
-                    }.show()
-                }
-            }
-        }
-
-    }
 
     private var itemTouchHelper: ItemTouchHelper? = null
 
@@ -135,18 +97,18 @@ class FavoritesFragment : Fragment() {
         binding.apply {
             lifecycleOwner = this@FavoritesFragment
             favoritesAdapter = adapter
-            viewModel = viewModel
+            viewModel = favoritesViewModel
         }
 
-        viewModel.currentFavoritesList.observe(viewLifecycleOwner, currentFavoritesListObserver)
-
-        viewModel.inputs.requestNewData.postValue(Unit)
+        favoritesViewModel.currentFavoritesList.observe(viewLifecycleOwner, currentFavoritesListObserver)
 
         if (itemTouchHelper == null) {
             itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         }
 
         itemTouchHelper?.attachToRecyclerView(binding.favoritesListRv)
+
+        favoritesViewModel.inputs.requestNewData.postValue(Unit)
     }
 
     override fun onDestroyView() {

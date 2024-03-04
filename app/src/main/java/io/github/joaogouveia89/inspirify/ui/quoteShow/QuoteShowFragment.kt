@@ -12,6 +12,8 @@ import io.github.joaogouveia89.inspirify.databinding.FragmentQuoteShowBinding
 
 class QuoteShowFragment : Fragment() {
 
+    //TODO: Refactor it to use binding just like the favorites fragment and solve progresssbar not showing here
+
     private var _binding: FragmentQuoteShowBinding? = null
 
     // This property is only valid between onCreateView and

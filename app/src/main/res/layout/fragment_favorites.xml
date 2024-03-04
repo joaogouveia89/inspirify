@@ -18,17 +18,29 @@
         android:layout_height="match_parent"
         tools:context=".ui.favorites.FavoritesFragment">
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:handleInProgress="@{viewModel.fetchingInProgress}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favorites_list_rv"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             app:showIfFalse="@{viewModel.showEmptyListMessage}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:adapter="@{favoritesAdapter}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/progressBar" />
 
         <TextView
             android:id="@+id/no_favorites_tv"

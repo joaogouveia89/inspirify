@@ -1,5 +1,6 @@
 package io.github.joaogouveia89.inspirify.ui.favorites
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -10,7 +11,9 @@ import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 import io.github.joaogouveia89.inspirify.di.InspirifyComponent
 import io.github.joaogouveia89.inspirify.ui.favorites.useCases.FetchFavoritesUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class FavoritesInputs {
@@ -21,6 +24,7 @@ class FavoritesInputs {
 interface FavoritesOutputs {
     val currentFavoritesList: LiveData<List<Favorite>>
     val showEmptyListMessage: LiveData<Boolean>
+    val fetchingInProgress: LiveData<Boolean>
     val showErrorMessage: LiveData<String>
 }
 
@@ -49,11 +53,11 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
     private val fetchFavoritesObserver = Observer<DataRequest> { response ->
         when (response) {
             is DataRequest.OnProgress -> {
-                //binding.progressBar.visibility = View.VISIBLE
+                _fetchingInProgress.value = true
             }
-
             is DataRequest.Success<*> -> {
                 val favorites = response.data as? List<Favorite>
+                _fetchingInProgress.value = false
                 // binding.quote = quote
                 favorites?.let {
                     _showEmptyListMessage.value = it.isEmpty()
@@ -62,6 +66,7 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
             }
 
             is DataRequest.Failed -> {
+                _fetchingInProgress.postValue(false)
                 _showErrorMessage.postValue(response.errorMessage)
             }
         }
@@ -81,6 +86,7 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
     private val _currentFavoritesList = MutableLiveData<List<Favorite>>()
     private val _showErrorMessage = MutableLiveData<String>()
     private val _showEmptyListMessage = MutableLiveData(true)
+    private val _fetchingInProgress = MutableLiveData(false)
     override val currentFavoritesList: LiveData<List<Favorite>>
         get() = _currentFavoritesList
 
@@ -89,6 +95,9 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
 
     override val showEmptyListMessage: LiveData<Boolean>
         get() = _showEmptyListMessage
+
+    override val fetchingInProgress: LiveData<Boolean>
+        get() = _fetchingInProgress
 
     private suspend fun fetchAllFavorites() {
         fetchFavoritesUseCase.execute()
