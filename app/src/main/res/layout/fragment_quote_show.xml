@@ -5,8 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="quote"
-            type="io.github.joaogouveia89.inspirify.ui.quoteShow.Quote" />
+            name="viewModel"
+            type="io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModel" />
     </data>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
-                android:visibility="invisible"
+                app:handleInProgress="@{viewModel.showLoading}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -48,7 +48,7 @@
                 android:textSize="18sp"
                 android:textColor="#333333"
                 android:paddingBottom="8dp"
-                android:text="@{quote.message}"
+                android:text="@{viewModel.currentQuote.message}"
                 app:layout_constraintTop_toBottomOf="@id/double_quote_iv"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -60,7 +60,7 @@
                 android:paddingHorizontal="12dp"
                 android:textColor="#666666"
                 android:textStyle="italic"
-                android:text="@{quote.author}"
+                android:text="@{viewModel.currentQuote.author}"
                 app:layout_constraintTop_toBottomOf="@id/quote_tv"
                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -68,7 +68,7 @@
                 android:id="@+id/favorite_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:imageResource="@{quote.favoriteIconRes}"
+                app:imageResource="@{viewModel.currentQuote.favoriteIconRes}"
                 android:paddingHorizontal="24dp"
                 app:layout_constraintTop_toBottomOf="@id/quote_tv"
                 app:layout_constraintEnd_toEndOf="parent"

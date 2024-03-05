@@ -14,7 +14,7 @@ Inspirify aims to inspire and uplift users by presenting them with motivational 
     - Translate quotes to the user's preferred language
 
 ## Bug List
-- [ ] When adding a quote to favorite and go to favorite list screen, delete that same quote in favorites fragment and go back to quote show fragment, it is supposed to show the quote as not favorite
+- When adding a quote to favorite and go to favorite list screen, delete that same quote in favorites fragment and go back to quote show fragment, it is supposed to show the quote as not favorite
 
 ## Libraries Used
 
