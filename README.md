@@ -9,7 +9,7 @@ Inspirify aims to inspire and uplift users by presenting them with motivational 
 - View motivational quotes sourced from [ZenQuotes](https://zenquotes.io/)
 - Save favorite quotes for future reference
 - Future Improvements:
-    - Delete favorite quotes
+    - ~~Delete favorite quotes~~
     - Share favorite quotes via email, WhatsApp, and SMS
     - Translate quotes to the user's preferred language
 
