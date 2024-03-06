@@ -7,6 +7,7 @@ import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.data.api.asQuote
 import io.github.joaogouveia89.inspirify.data.api.retrofit.RetrofitZenQuotes
 import io.github.joaogouveia89.inspirify.data.local.LocalDb
+import io.github.joaogouveia89.inspirify.data.local.entities.Favorite
 import io.github.joaogouveia89.inspirify.ui.quoteShow.Quote
 import io.github.joaogouveia89.inspirify.ui.quoteShow.asFavorite
 import kotlinx.coroutines.runBlocking
@@ -62,12 +63,7 @@ class QuoteRepository @Inject constructor(
     suspend fun addFavorite(quote: Quote) {
         _dataRequest.postValue(DataRequest.OnProgress)
 
-        val localQuote = runBlocking {
-            localDb.favoriteDao().getQuoteLocally(
-                quote = quote.message,
-                author = quote.author
-            )
-        }
+        val localQuote = getFavorite(quote)
 
         if (localQuote.isNotEmpty()) {
             val code =
@@ -110,5 +106,25 @@ class QuoteRepository @Inject constructor(
                 _dataRequest.postValue(DataRequest.Failed("Error deleting the favorite"))
             }
         }
+    }
+
+    suspend fun checkIfIsFavorite(quote: Quote) {
+        _dataRequest.postValue(DataRequest.OnProgress)
+        val favoriteList = getFavorite(quote)
+        // if not empty it is a favorite
+        _dataRequest.postValue(
+            DataRequest.Success(
+                quote.copy(
+                    favoriteIconRes = if (favoriteList.isEmpty()) R.drawable.ic_like else R.drawable.ic_like_fill
+                )
+            )
+        )
+    }
+
+    private suspend fun getFavorite(quote: Quote): List<Favorite> = runBlocking {
+        localDb.favoriteDao().getQuoteLocally(
+            quote = quote.message,
+            author = quote.author
+        )
     }
 }

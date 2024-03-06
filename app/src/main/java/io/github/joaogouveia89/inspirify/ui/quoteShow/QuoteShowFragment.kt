@@ -31,6 +31,11 @@ class QuoteShowFragment : Fragment() {
         quoteShowViewModel.inputs.requestNewData.postValue(Unit)
     }
 
+    override fun onResume() {
+        super.onResume()
+        quoteShowViewModel.inputs.checkFavoriteState.postValue(Unit)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

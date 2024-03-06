@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.joaogouveia89.inspirify.data.DataRequest
 import io.github.joaogouveia89.inspirify.di.InspirifyComponent
+import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.CheckFavoriteStateUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteAddToFavoriteUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteShowUseCase
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,7 @@ class QuotesInputs {
     val requestNewData = MutableLiveData<Unit>()
     val onFavoriteClick = MutableLiveData<Unit>()
     val updateQuote = MutableLiveData<Quote>()
+    val checkFavoriteState = MutableLiveData<Unit>()
 }
 
 interface QuotesOutputs {
@@ -51,6 +53,14 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
         _currentQuote.postValue(it)
     }
 
+    private val checkAlreadyFavoriteObserver = Observer<Unit> {
+        _currentQuote.value?.let {
+            viewModelScope.launch(Dispatchers.IO) {
+                checkFavoriteStateUseCase.execute(it)
+            }
+        }
+    }
+
     private val onDataRequestObserver = Observer<DataRequest> { response ->
         when (response) {
             is DataRequest.OnProgress -> {
@@ -77,11 +87,15 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
 
     init {
         inspirifyComponent.inject(this)
-        inputs.onFavoriteClick.observeForever(onFavoriteClickObserver)
-        inputs.requestNewData.observeForever(requestNewDataObserver)
-        inputs.updateQuote.observeForever(updateQuoteObserver)
+        inputs.apply {
+            onFavoriteClick.observeForever(onFavoriteClickObserver)
+            requestNewData.observeForever(requestNewDataObserver)
+            updateQuote.observeForever(updateQuoteObserver)
+            checkFavoriteState.observeForever(checkAlreadyFavoriteObserver)
+        }
         quoteAddToFavoriteUseCase.dataRequest.observeForever(onDataRequestObserver)
         quoteShowUseCase.dataRequest.observeForever(onDataRequestObserver)
+        checkFavoriteStateUseCase.dataRequest.observeForever(onDataRequestObserver)
     }
 
     @Inject
@@ -89,6 +103,9 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
 
     @Inject
     lateinit var quoteAddToFavoriteUseCase: QuoteAddToFavoriteUseCase
+
+    @Inject
+    lateinit var checkFavoriteStateUseCase: CheckFavoriteStateUseCase
 
     private val _currentQuote = MutableLiveData<Quote>()
     private val _showLoading = MutableLiveData<Boolean>()
@@ -109,10 +126,14 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
 
     override fun onCleared() {
         super.onCleared()
-        inputs.onFavoriteClick.removeObserver(onFavoriteClickObserver)
-        inputs.requestNewData.removeObserver(requestNewDataObserver)
-        inputs.updateQuote.removeObserver(updateQuoteObserver)
+        inputs.apply {
+            onFavoriteClick.removeObserver(onFavoriteClickObserver)
+            requestNewData.removeObserver(requestNewDataObserver)
+            updateQuote.removeObserver(updateQuoteObserver)
+            checkFavoriteState.removeObserver(checkAlreadyFavoriteObserver)
+        }
         quoteAddToFavoriteUseCase.dataRequest.removeObserver(onDataRequestObserver)
         quoteShowUseCase.dataRequest.removeObserver(onDataRequestObserver)
+        checkFavoriteStateUseCase.dataRequest.removeObserver(onDataRequestObserver)
     }
 }

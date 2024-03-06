@@ -5,6 +5,7 @@ import dagger.Provides
 import io.github.joaogouveia89.inspirify.data.repositories.QuoteRepository
 import io.github.joaogouveia89.inspirify.ui.favorites.useCases.DeleteFavoritesUseCase
 import io.github.joaogouveia89.inspirify.ui.favorites.useCases.FetchFavoritesUseCase
+import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.CheckFavoriteStateUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteAddToFavoriteUseCase
 import io.github.joaogouveia89.inspirify.ui.quoteShow.useCases.QuoteShowUseCase
 
@@ -24,4 +25,8 @@ class UseCasesModule {
     @Provides
     fun provideDeleteFavoriteUseCase(repository: QuoteRepository) =
         DeleteFavoritesUseCase(repository)
+
+    @Provides
+    fun provideCheckFavoriteStateUseCase(repository: QuoteRepository) =
+        CheckFavoriteStateUseCase(repository)
 }
