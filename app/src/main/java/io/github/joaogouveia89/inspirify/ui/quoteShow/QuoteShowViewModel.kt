@@ -32,7 +32,11 @@ interface QuoteViewModelType {
     val outputs: QuotesOutputs
 }
 
-class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), QuoteViewModelType,
+class QuoteShowViewModel @Inject constructor(
+    private val quoteShowUseCase: QuoteShowUseCase,
+    private val quoteAddToFavoriteUseCase: QuoteAddToFavoriteUseCase,
+    private val checkFavoriteStateUseCase: CheckFavoriteStateUseCase,
+) : ViewModel(), QuoteViewModelType,
     QuotesOutputs {
 
     private val onFavoriteClickObserver = Observer<Unit> {
@@ -86,7 +90,6 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
     override val inputs = QuotesInputs()
 
     init {
-        inspirifyComponent.inject(this)
         inputs.apply {
             onFavoriteClick.observeForever(onFavoriteClickObserver)
             requestNewData.observeForever(requestNewDataObserver)
@@ -97,15 +100,6 @@ class QuoteShowViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(), 
         quoteShowUseCase.dataRequest.observeForever(onDataRequestObserver)
         checkFavoriteStateUseCase.dataRequest.observeForever(onDataRequestObserver)
     }
-
-    @Inject
-    lateinit var quoteShowUseCase: QuoteShowUseCase
-
-    @Inject
-    lateinit var quoteAddToFavoriteUseCase: QuoteAddToFavoriteUseCase
-
-    @Inject
-    lateinit var checkFavoriteStateUseCase: CheckFavoriteStateUseCase
 
     private val _currentQuote = MutableLiveData<Quote>()
     private val _showLoading = MutableLiveData<Boolean>()
