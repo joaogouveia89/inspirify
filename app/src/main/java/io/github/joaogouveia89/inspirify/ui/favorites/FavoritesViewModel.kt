@@ -31,7 +31,10 @@ interface FavoritesViewModelType {
     val outputs: FavoritesOutputs
 }
 
-class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
+class FavoritesViewModel  @Inject constructor(
+    private val fetchFavoritesUseCase: FetchFavoritesUseCase,
+    private val deleteFavoritesUseCase: DeleteFavoritesUseCase,
+) : ViewModel(),
     FavoritesViewModelType, FavoritesOutputs {
 
     override val outputs = this
@@ -85,14 +88,7 @@ class FavoritesViewModel(inspirifyComponent: InspirifyComponent) : ViewModel(),
 
     }
 
-    @Inject
-    lateinit var fetchFavoritesUseCase: FetchFavoritesUseCase
-
-    @Inject
-    lateinit var deleteFavoritesUseCase: DeleteFavoritesUseCase
-
     init {
-        inspirifyComponent.inject(this)
         inputs.requestNewData.observeForever(requestNewDataObserver)
         inputs.onFavoriteDelete.observeForever(onFavoriteDeleteObserver)
         fetchFavoritesUseCase.dataRequest.observeForever(favoritesUpdateObserver)

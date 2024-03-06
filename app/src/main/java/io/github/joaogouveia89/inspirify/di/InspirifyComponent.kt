@@ -5,6 +5,7 @@ import io.github.joaogouveia89.inspirify.di.modules.DataModule
 import io.github.joaogouveia89.inspirify.di.modules.RepositoriesModule
 import io.github.joaogouveia89.inspirify.di.modules.UseCasesModule
 import io.github.joaogouveia89.inspirify.ui.favorites.FavoritesViewModel
+import io.github.joaogouveia89.inspirify.ui.favorites.FavoritesViewModelFactory
 import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModel
 import io.github.joaogouveia89.inspirify.ui.quoteShow.QuoteShowViewModelFactory
 import javax.inject.Singleton
@@ -13,5 +14,5 @@ import javax.inject.Singleton
 @Component(modules = [DataModule::class, RepositoriesModule::class, UseCasesModule::class])
 interface InspirifyComponent {
     fun inject(factory: QuoteShowViewModelFactory)
-    fun inject(viewModel: FavoritesViewModel)
+    fun inject(factory: FavoritesViewModelFactory)
 }
