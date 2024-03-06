@@ -39,31 +39,22 @@ class QuoteShowViewModelTest : InspirifyViewModelUnitTest() {
 
     // Lateinit ViewModel and ViewModelFactory
     private lateinit var viewModel: QuoteShowViewModel
-    private lateinit var viewModelFactory: QuoteShowViewModelFactory
 
     private val quote: Quote = mockk(relaxed = true)
 
     @Before
     fun setup() {
-        // Mock the behavior of inject method
-        val inspirifyComponent: InspirifyComponent = mockk()
-        every { inspirifyComponent.inject(any<QuoteShowViewModel>()) } answers {
-            val viewModel: QuoteShowViewModel = firstArg()
-            viewModel.quoteShowUseCase = quoteShowUseCase
-            viewModel.quoteAddToFavoriteUseCase = quoteAddToFavoriteUseCase
-            viewModel.checkFavoriteStateUseCase = checkFavoriteStateUseCase // Injecting checkFavoriteStateUseCaseMock
-        }
-
-        // Mock the behavior of getDataRequest() function in QuoteShowUseCase
+        // Mock the behavior of your dependencies
         every { quoteShowUseCase.dataRequest } returns MutableLiveData()
         every { quoteAddToFavoriteUseCase.dataRequest } returns MutableLiveData()
         every { checkFavoriteStateUseCase.dataRequest } returns MutableLiveData()
 
-        // Pass the mocked component to your ViewModelFactory
-        viewModelFactory = QuoteShowViewModelFactory(inspirifyComponent)
-
-        // Create the ViewModel instance
-        viewModel = viewModelFactory.create(QuoteShowViewModel::class.java)
+        // Create the ViewModel instance using the constructor with injected dependencies
+        viewModel = QuoteShowViewModel(
+            quoteShowUseCase = quoteShowUseCase,
+            quoteAddToFavoriteUseCase = quoteAddToFavoriteUseCase,
+            checkFavoriteStateUseCase = checkFavoriteStateUseCase
+        )
     }
 
     @After
